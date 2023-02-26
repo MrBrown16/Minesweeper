@@ -5,26 +5,23 @@ window.addEventListener('contextmenu', (event) => {
     event.preventDefault();
 });
 
-document.getElementById("input").onsubmit=function(e){
+document.getElementById("input").onsubmit = function (e) {
     e.preventDefault();
-    
+
     rowcol = Number(e.target.elements.rowcol.value);
-    
+
     mines = Number(e.target.elements.mines.value);
 
-    if (mines>=(rowcol*rowcol)){
-        document.querySelector("#setup h2").innerHTML="Are you mentally challenged?";
-        document.getElementById("mines").style.backgroundColor="red";
+    if (mines >= (rowcol * rowcol)) {
+        document.querySelector("#setup h2").innerHTML = "Are you mentally challenged?";
+        document.getElementById("mines").style.backgroundColor = "red";
         return false;
     }
-    fieldCreate();    
+    fieldCreate();
     minePlace();
-    //mineCount(element);
-    
-
-  
 };
-function fieldCreate(){
+
+function fieldCreate() {
     document.getElementById("setup").style.display = "none";
 
     let field = document.getElementById("field");
@@ -33,14 +30,14 @@ function fieldCreate(){
     for (let i = 0; i < rowcol; i++) {
         let row = document.createElement("div");
         row.className = "row";
-        
+
         for (let j = 0; j < rowcol; j++) {
             let col = document.createElement("div");
-            col.className = "col";   
+            col.className = "col";
             col.onmousedown = click;
             row.appendChild(col);
-            col.dataset.rowi=i+1;
-            col.dataset.coli=j+1;
+            col.dataset.row = i + 1;
+            col.dataset.col = j + 1;
         };
         field.appendChild(row);
     };
@@ -48,23 +45,24 @@ function fieldCreate(){
 
     for (let i = 0; i < cells.length; i++) {
         let mc = mineCount(cells[i]);
-        cells[i].dataset.mineCount = mc;        
-        cells[i].innerHTML = (mc==0?"":mc);
+        cells[i].dataset.mineCount = mc;
+        cells[i].innerHTML = (mc == 0 ? "" : mc);
     }
 };
- 
-function minePlace(){
+
+function minePlace() {
     for (let i = 0; i < mines; i++) {
-        let x = Math.round(Math.random()*(rowcol-1));
-        let y = Math.round(Math.random()*(rowcol-1));
+        let x = Math.round(Math.random() * (rowcol - 1));
+        let y = Math.round(Math.random() * (rowcol - 1));
         let c = document.getElementById("field").children[x].children[y];
         if (c.dataset.mine == "1") i--;
-        else{
+        else {
             c.dataset.mine = "1";
             c.classList.add("mine");
         }
     }
 }
+
 function mineCount(cell){
     let mineNum = 0;
 
@@ -114,23 +112,7 @@ function mineCount(cell){
     }
     return mineNum;
 };
-// function surroundingcells(cell){
-//     let cellrow = cell.dataset.rowi;
-//     let cellcol = cell.dataset.coli;
-//     if ((cellrow != 1) && (cellrow != rowcol)){
-//         if((cellcol != 1) && (cellcol != rowcol)){
-//             for (let i = cellrow-1; i < cellrow+1; i++) {
-//                 for (let i = cellcol-1; i < cellcol+1; i++) {
-//                     cell.dataset.c
-                    
-//                 }
-                
-//             }
-//         }
-//     }
-      
 
-// }
 function checkAdjacentDivs(row, col) {
     const adjacentDivs = [];
     for (let r = row - 1; r <= row + 1; r++) {
@@ -142,42 +124,34 @@ function checkAdjacentDivs(row, col) {
             }
         }
     }
-    console.log(adjacentDivs)
     adjacentDivs.forEach(div => mineCount(div));
 }
-  
-function click(e){
-    // console.log("e",e);
-    // console.log("e.which",e.which);
-    //console.log("this=",this);
-    // console.log("this.prev.sib=",this.previousElementSibling);
-    // console.log("this.parentN.prev.sib=",this.parentNode.previousElementSibling);
 
-    if (e.which>1) this.classList.toggle("flag");
-    if (e.which == 1) {
-        //console.log("1");
-        if (this.dataset.mine) {
-            let cells = document.getElementsByClassName("col");
-            for (let i = 0; i < cells.length; i++) {
-                cells[i].onmousedown = null;
-                
-            }
-        
-            this.classList.remove("mine");
-            this.classList.add("bumm");
-            document.getElementById("setup").style.display="block";
-            document.querySelector("#setup h2").innerHTML = "You died";
-            this.style.backgroundColor = "orangered";
+function click(e) {
+    e.preventDefault();
+
+    if (e.button == 2) {
+        console.log("right click");
+    }
+    else {
+        console.log("left click");
+        //console.log(e.target.dataset.mine);
+        if (e.target.dataset.mine) {
+            console.log("BOOM!!!");
+
+        } else if (e.target.dataset.mineCount == "0") {
+            console.log("zero mines");
+
+            const row = parseInt(e.target.dataset.row);
+            const col = parseInt(e.target.dataset.col);
+            checkAdjacentDivs(row, col);
         }
-        else{
-            this.style.backgroundColor = "green";
-            mineCount(this);
-            let chosenRow = this.dataset.rowi;
-            let chosenCol = this.dataset.coli;
-            const chosenDiv = document.querySelector(`#field [data-row='${chosenRow}'][data-col='${chosenCol}']`);
-            checkAdjacentDivs(chosenRow, chosenCol);
-
+        else {
+            console.log("not zero mines");
         }
     }
+}
 
-};
+function checkAdjacentDivs(row, col) {
+    console.log("checkAdjacentDivs", row, col);
+}
