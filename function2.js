@@ -66,65 +66,95 @@ function minePlace() {
 function mineCount(cell){
     let mineNum = 0;
 
-    if (!cell.dataset.mine){
-        if((cell.previousElementSibling)
-            && (cell.previousElementSibling.dataset.mine))
-                mineNum++;
-                //console.log("prev.s",mineNum);
 
-        if((cell.nextElementSibling)
-            && (cell.nextElementSibling.dataset.mine))
-                mineNum++;
-                //console.log("next.s",mineNum);
+    if ((cell.previousElementSibling)
+        && (cell.previousElementSibling.dataset.mine))
+        mineNum++;
+    //console.log("prev.s",mineNum);
+
+    if ((cell.nextElementSibling)
+        && (cell.nextElementSibling.dataset.mine))
+        mineNum++;
+    //console.log("next.s",mineNum);
 
 
-        let index = 0;
-        let beforeindex = cell.previousElementSibling;
+    let index = 0;
+    let beforeindex = cell.previousElementSibling;
 
-        while(beforeindex){
-            index++;
-            beforeindex = beforeindex.previousElementSibling;
-            //console.log("elem helye: ",beforeindex);
-        }
-        if(cell.parentNode.previousElementSibling){
-            let start = (index - 1 >= 0)?index - 1 : 0;
-            let end = (index + 1 < rowcol)?index + 1 : index;
-
-            for (let i = start; i <= end; i++) {
-                if (cell.parentNode.previousElementSibling.children[i].dataset.mine) {
-                    mineNum++;
-                }
-                
-            }
-        }
-        if(cell.parentNode.nextElementSibling){
-            let start = (index - 1 >= 0)?index - 1 : 0;
-            let end = (index + 1 < rowcol)?index + 1 : index;
-
-            for (let i = start; i <= end; i++) {
-                if (cell.parentNode.nextElementSibling.children[i].dataset.mine) {
-                    mineNum++;
-                }
-                
-            }
-        }
-        cell.innerHTML = mineNum;
+    while (beforeindex) {
+        index++;
+        beforeindex = beforeindex.previousElementSibling;
+        //console.log("elem helye: ",beforeindex);
     }
+    if (cell.parentNode.previousElementSibling) {
+        let start = (index - 1 >= 0) ? index - 1 : 0;
+        let end = (index + 1 < rowcol) ? index + 1 : index;
+
+        for (let i = start; i <= end; i++) {
+            if (cell.parentNode.previousElementSibling.children[i].dataset.mine) {
+                mineNum++;
+            }
+
+        }
+    }
+    if (cell.parentNode.nextElementSibling) {
+        let start = (index - 1 >= 0) ? index - 1 : 0;
+        let end = (index + 1 < rowcol) ? index + 1 : index;
+
+        for (let i = start; i <= end; i++) {
+            if (cell.parentNode.nextElementSibling.children[i].dataset.mine) {
+                mineNum++;
+            }
+
+        }
+    }
+    // cell.innerHTML = mineNum;
+
     return mineNum;
 };
 
 function checkAdjacentDivs(row, col) {
+    console.log("checkAD","row",row,"col",col);
     const adjacentDivs = [];
     for (let r = row - 1; r <= row + 1; r++) {
         for (let c = col - 1; c <= col + 1; c++) {
-            if (r === row && c === col) continue; // skip the chosen div
+            //if (r === row && c === col) continue; // skip the chosen div
             const divElem = document.querySelector(`#field [data-row='${r}'][data-col='${c}']`);
+            // console.log(divElem);
+            // console.log("checkAD ");
             if (divElem) {
                 adjacentDivs.push(divElem);
+                
+
+                if ((!divElem.dataset.mine)&&(mineCount(divElem)===0)&&(divElem.style.backgroundColor!="green")&&(divElem.style.backgroundColor!="yellow")) {
+                    divElem.style.backgroundColor = "green";
+                    divElem.innerHTML = mineCount(divElem);
+
+                    
+                    // console.log(divElem);
+                    // console.log("checkAD if if");
+                    const row = parseInt(divElem.dataset.row);
+                    const col = parseInt(divElem.dataset.col);
+                    //const adjDivs = checkAdjacentDivs(row,col);
+                    //console.log(adjDivs.length);
+                    // adjDivs.forEach(div => {
+                    //     console.log("foreach");
+                    //     div.innerHTML=mineCount(div);
+                    //     div.style.backgroundColor="yellow"
+                    // });
+                }
+                // else if ((!divElem.dataset.mine)&&(divElem.style.backgroundColor!="green")) {
+                //     divElem.style.backgroundColor="green"
+                // }
+                if (mineCount(divElem)!=0){
+                    //divElem.innerHTML = "";
+                }
+                console.log("checkAD if");
             }
         }
     }
-    adjacentDivs.forEach(div => mineCount(div));
+    //adjacentDivs.forEach(div => mineCount(div));
+    return adjacentDivs;
 }
 
 function click(e) {
@@ -132,26 +162,42 @@ function click(e) {
 
     if (e.button == 2) {
         console.log("right click");
+        console.log("this",this);
+        //console.log("e",e);
+        this.classList.toggle("flag");
     }
     else {
         console.log("left click");
         //console.log(e.target.dataset.mine);
         if (e.target.dataset.mine) {
             console.log("BOOM!!!");
+            let cells = document.getElementsByClassName("col");
+            for (let i = 0; i < cells.length; i++) {
+                cells[i].onmousedown = null;
+                
+            }
+        
+            this.classList.remove("mine");
+            this.classList.add("bumm");
+            document.getElementById("setup").style.display="block";
+            document.querySelector("#setup h2").innerHTML = "You died";
+            this.style.backgroundColor = "orangered";
 
         } else if (e.target.dataset.mineCount == "0") {
             console.log("zero mines");
-
+            //this.style.backgroundColor = "green";
+            mineCount(this);
+            this.innerHTML= mineCount(this);
             const row = parseInt(e.target.dataset.row);
             const col = parseInt(e.target.dataset.col);
-            checkAdjacentDivs(row, col);
+            //console.log("row",row,"col",col);
+            const x = checkAdjacentDivs(row, col);
+            console.log("length",x.length)
         }
-        else {
-            console.log("not zero mines");
-        }
+        
     }
 }
 
-function checkAdjacentDivs(row, col) {
-    console.log("checkAdjacentDivs", row, col);
-}
+// function checkAdjacentDivs(row, col) {
+//     console.log("checkAdjacentDivs", row, col);
+// }
