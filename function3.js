@@ -37,22 +37,11 @@ function fieldCreate() {
             row.appendChild(col);
             col.dataset.row = i + 1;
             col.dataset.col = j + 1;
+            col.dataset.ch=0;
         };
         field.appendChild(row);
     };
     let cells = document.getElementsByClassName("col");
-
-    // for (let i = 0; i < cells.length; i++) {
-    //     let mc = mineCount(cells[i]);
-    //     cells[i].dataset.mineCount = mc;
-    //     cells[i].innerHTML = (mc == 0 ? "" : mc);
-    //     // if ((mc===0)&&(!cells[i].mine)) {
-    //     //     let row = cells[i].dataset.row;
-    //     //     let col = cells[i].dataset.col;
-    //     //     checkAdjacentDivs(row,col);
-
-    //     // }
-    // }
 };
 
 function minePlace() {
@@ -114,57 +103,24 @@ function mineCount(cell){
         }
     }
     // cell.innerHTML = mineNum;
-
     return mineNum;
 };
 
 function checkAdjacentDivs(row, col) {
-    //console.log("checkAD","row",row,"col",col);
     const adjacentDivs = [];
     for (let r = row - 1; r <= row + 1; r++) {
         for (let c = col - 1; c <= col + 1; c++) {
-            //if (r === row && c === col) continue; // skip the chosen div
+            if (r === row && c === col) continue; // skip the chosen div
             const divElem = document.querySelector(`#field [data-row='${r}'][data-col='${c}']`);
-            // console.log(divElem);
-            // console.log("checkAD ");
-            if (divElem) {
+        
+            if ((divElem)&&(!divElem.dataset.checked)) {
                 adjacentDivs.push(divElem);
-                divElem.innerHTML=mineCount(divElem);
-                if ((mineCount(divElem)===0)&&(!divElem.dataset.mine)) {
-                    divElem.innerHTML=mineCount(divElem);
-                }
-
-                // if ((!divElem.dataset.mine)&&(mineCount(divElem)===0)&&(divElem.style.backgroundColor!="green")&&(divElem.style.backgroundColor!="yellow")) {
-                //     divElem.style.backgroundColor = "green";
-                //     divElem.innerHTML = mineCount(divElem);
-
-                    
-                //     // console.log(divElem);
-                //     // console.log("checkAD if if");
-                //     const row = parseInt(divElem.dataset.row);
-                //     const col = parseInt(divElem.dataset.col);
-                //     //const adjDivs = checkAdjacentDivs(row,col);
-                //     //console.log(adjDivs.length);
-                //     // adjDivs.forEach(div => {
-                //     //     console.log("foreach");
-                //     //     div.innerHTML=mineCount(div);
-                //     //     div.style.backgroundColor="yellow"
-                //     // });
-                // }
-                // else if ((!divElem.dataset.mine)&&(divElem.style.backgroundColor!="green")) {
-                //     divElem.style.backgroundColor="green"
-                // }
-                // if (mineCount(divElem)!=0){
-                //     //divElem.innerHTML = "";
-                // }
-                console.log("checkAD if");
+                
             }
         }
     }
-    //adjacentDivs.forEach(div => mineCount(div));
     return adjacentDivs;
 }
-
 function click(e) {
     e.preventDefault();
 
@@ -191,21 +147,48 @@ function click(e) {
             document.querySelector("#setup h2").innerHTML = "You died";
             this.style.backgroundColor = "orangered";
 
-        } else if (e.target.dataset.mineCount == "0") {
+        } else if (!e.target.dataset.mine) {
             console.log("zero mines");
-            //this.style.backgroundColor = "green";
-            mineCount(this);
+            this.style.backgroundColor = "green";
             this.innerHTML= mineCount(this);
-            const row = parseInt(e.target.dataset.row);
-            const col = parseInt(e.target.dataset.col);
-            //console.log("row",row,"col",col);
-            // const x = checkAdjacentDivs(row, col);
-            // console.log("length",x.length)
+            if (mineCount(this)===0) {
+                hasNoMinesAround(this);
+            }
+            
+
+            
         }
         
     }
-}
+};
 
-// function checkAdjacentDivs(row, col) {
-//     console.log("checkAdjacentDivs", row, col);
-// }
+function hasNoMinesAround(cell) {
+
+
+    if (cell.dataset.ch==="0") {
+        // console.log(cell.dataset.ch);
+        // console.log(typeof(cell.dataset.ch));
+        // console.log(cell.dataset.ch);
+        const row = parseInt(cell.dataset.row);
+        const col = parseInt(cell.dataset.col);
+        const adj = checkAdjacentDivs(row,col);
+        cell.dataset.ch=1;
+        adj.forEach(cell => {
+            console.log("környező db szám",adj.length);
+            cell.style.backgroundColor = "green";
+            mc = mineCount(cell);
+            cell.innerHTML= mc;
+            if (mc===0) {
+                console.log("hasNoMinesAround if");
+                console.log(cell);
+                // for (let i = 0; i < 2; i++) {
+                //     hasNoMinesAround(cell);
+                    
+                // }
+                hasNoMinesAround(cell);
+            }
+        });
+    }
+    
+    
+}
