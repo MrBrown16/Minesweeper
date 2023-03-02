@@ -19,19 +19,30 @@ h2{
     width: 25%;
     margin: 0 auto;
     text-align: center;
+    
 }
 #input{
     margin: 0 auto;
     
 }
+#field{
+    display: block;
+    width: 900px;
+    height: 900px;
+    max-width: 900px;
+    max-height: 900px;
+}
 .row{
-    display: flex;
+    display: inline-flex;
     justify-content: center;
+    width: inherit;
 }
 .col{
-    min-width: 50px;
+    /* display: inline; */
+    aspect-ratio : 1 / 1;
+    /* min-width: 50px;
     max-width: 50px;
-    height: 50px;
+    height: 50px; */
     background-color: orangered;
     border: 1px solid black;
     font-size: 2rem;

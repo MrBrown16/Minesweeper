@@ -10,7 +10,7 @@ window.addEventListener('contextmenu', (event) => {
 
 document.getElementById("input").onsubmit = function (e) {
     e.preventDefault();
-
+    
     rowcol = Number(e.target.elements.rowcol.value);
     mines = Number(e.target.elements.mines.value);
 
@@ -22,13 +22,34 @@ document.getElementById("input").onsubmit = function (e) {
     fieldCreate();
 };
 
+function begin(){
+    document.getElementById("rowcol").value="9";
+    document.getElementById("mines").value="10";
+    console.log(begin);
+}
+function inter(){
+    document.getElementById("rowcol").value="16";
+    document.getElementById("mines").value="40";
+    console.log(inter);
+
+}
+function exp(){
+    document.getElementById("rowcol").value="22";
+    document.getElementById("mines").value="98";
+    console.log(exp);
+
+}
+
 function fieldCreate() {
     document.getElementById("setup").style.display = "none";
     uncovered=0;
     flaggedmines=0;
     flags=0;
     let field = document.getElementById("field");
-
+    // let fieldWidth = document.getElementById("field").style.width;
+    // let width = fieldWidth/rowcol;
+    // let widthp = width+"%";
+    
     field.innerHTML = "";
     for (let i = 0; i < rowcol; i++) {
         let row = document.createElement("div");
@@ -45,7 +66,9 @@ function fieldCreate() {
         };
         field.appendChild(row);
     };
-    let cells = document.getElementsByClassName("col");
+    // document.getElementsByClassName("col").style.width="10px";
+    // document.getElementsByClassName("col").style.height=widthp;
+    //let cells = document.getElementsByClassName("col");
     minePlace();
 };
 
@@ -200,7 +223,7 @@ function click(e) {
                 let col = thiscell.dataset.col-1;
                 let clicked = field.children[row].children[col];
                 console.log("clicked",clicked);
-                click.
+                // click.
                 var Event = EventSource
                 console.log("recreated")
             }
