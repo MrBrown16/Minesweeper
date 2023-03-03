@@ -7,7 +7,8 @@
 h1{
     margin: 0 auto;
     text-align: center;
-    font-size: 3rem;
+    font-size: 2.7rem;
+    margin-top: 70px;
 }
 h2{
     margin: 0 auto;
@@ -15,23 +16,47 @@ h2{
     font-size: 2.5rem;
     color: red;
 }
+label{
+    white-space: nowrap;
+}
+button{
+    margin: 20px auto;
+}
+#radio{
+    margin-top: 10px;
+}
 #setup{
-    width: 25%;
+    /* width: 25%; */
     margin: 0 auto;
     text-align: center;
+    margin-top: 5%;
 }
 #input{
     margin: 0 auto;
     
 }
-.row{
+#field{
     display: flex;
-    justify-content: center;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    max-width: 90%;
+    aspect-ratio: 1/1;
+    margin: 0 auto;
+    margin-top: 5%;
+    margin-bottom: 25%;
+}
+.row{
+    display:flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    width: max-content;
+    align-self: center;
 }
 .col{
-    min-width: 50px;
+    margin: 0 auto;
     max-width: 50px;
-    height: 50px;
+    max-height: 50px;
+    aspect-ratio: 1/1;
     background-color: orangered;
     border: 1px solid black;
     font-size: 2rem;
@@ -55,4 +80,12 @@ h2{
     background-position: center;
     background-size: cover;
     
+}
+footer{
+    text-align: center;
+}
+@media only screen and (min-width: 900px) {
+    h1{
+        font-size: 3.2rem;
+    }
 }

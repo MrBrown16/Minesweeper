@@ -22,6 +22,12 @@
                 <label for="mines">Number of mines</label><br>
                 <input type="number" id="mines" name="mines" value="5">
            </div>
+           <div id="radio">
+            <span><label for="beginner">Beginner&nbsp;<input type="radio" id="beginner" name="radio" onclick="begin()" /></label></span>
+            <span><label for="intermediate">Intermediate&nbsp;<input type="radio" id="intermediate" name="radio" onclick="inter()" /></label></span>  
+            <span><label for="expert">Expert&nbsp;<input type="radio" id="expert"name="radio" onclick="exp()" /></label></span>
+                
+           </div>
            <div>
                 <button>Generate</button>
            </div>
@@ -32,5 +38,6 @@
     <div id="field">
 
     </div>
+    <footer> <small>&copy; Copyright 2023, Móra Barna</small> </footer> 
 </body>
 </html>

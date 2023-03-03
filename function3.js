@@ -22,14 +22,36 @@ document.getElementById("input").onsubmit = function (e) {
     fieldCreate();
 };
 
+function begin(){
+    document.getElementById("rowcol").value="9";
+    document.getElementById("mines").value="10";
+    console.log(begin);
+};
+
+function inter(){
+    document.getElementById("rowcol").value="16";
+    document.getElementById("mines").value="40";
+    console.log(inter);
+
+};
+
+function exp(){
+    document.getElementById("rowcol").value="22";
+    document.getElementById("mines").value="98";
+    console.log(exp);
+};
+
 function fieldCreate() {
     document.getElementById("setup").style.display = "none";
     uncovered=0;
     flaggedmines=0;
     flags=0;
     let field = document.getElementById("field");
-
+    field.style.marginTop="5%";
     field.innerHTML = "";
+    let fieldwidth = field.clientWidth;
+    let colwidth = ((fieldwidth/rowcol)+"px");
+
     for (let i = 0; i < rowcol; i++) {
         let row = document.createElement("div");
         row.className = "row";
@@ -37,6 +59,7 @@ function fieldCreate() {
         for (let j = 0; j < rowcol; j++) {
             let col = document.createElement("div");
             col.className = "col";
+            col.style.width=colwidth;
             col.onmousedown = click;
             row.appendChild(col);
             col.dataset.row = i + 1;
@@ -45,7 +68,6 @@ function fieldCreate() {
         };
         field.appendChild(row);
     };
-    let cells = document.getElementsByClassName("col");
     minePlace();
 };
 
@@ -175,7 +197,7 @@ function click(e) {
                     cells[i].onmousedown = null;
                     
                 }
-            
+                document.getElementById("field").style.marginTop="1%";
                 this.classList.remove("mine");
                 this.classList.add("bumm");
                 document.getElementById("setup").style.display="block";
@@ -194,15 +216,15 @@ function click(e) {
                 }
             } else if ((e.target.dataset.mine)&&(uncovered==0)) {
                 
-                let thiscell = e.target;
+                //let thiscell = e.target;
                 fieldCreate();
-                let row = thiscell.dataset.row-1;
-                let col = thiscell.dataset.col-1;
-                let clicked = field.children[row].children[col];
-                console.log("clicked",clicked);
-                click.
-                var Event = EventSource
-                console.log("recreated")
+                // let row = thiscell.dataset.row-1;
+                // let col = thiscell.dataset.col-1;
+                // let clicked = field.children[row].children[col];
+                // console.log("clicked",clicked);
+                // click.
+                // var Event = EventSource
+                // console.log("recreated")
             }
         }
         
@@ -210,6 +232,7 @@ function click(e) {
     if ((flags==flaggedmines)&&(flaggedmines==mines)&&(((rowcol*rowcol)-mines)<=uncovered)) {
         document.querySelector("#setup h2").innerHTML = "You Won</br>Congratulation!!!";
         document.getElementById("setup").style.display = "block";
+        document.getElementById("field").style.marginTop=0;
 
 
 
