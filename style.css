@@ -3,7 +3,9 @@
     margin: 0;
     box-sizing: border-box;
 }
-
+html{
+    background-color: beige;
+}
 h1{
     margin: 0 auto;
     text-align: center;
@@ -21,6 +23,9 @@ label{
 }
 button{
     margin: 20px auto;
+    background-color: aliceblue;
+    font-size: 1.1rem;
+    border-radius: 5px;
 }
 #radio{
     margin-top: 10px;
@@ -61,6 +66,7 @@ button{
     border: 1px solid black;
     font-size: 2rem;
     text-align: center;
+    box-shadow: 1px 2px 2px 1px inset darkorange;
 }
 .flag{
     background-image: url(./img/flag.png);
