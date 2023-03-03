@@ -10,7 +10,7 @@ window.addEventListener('contextmenu', (event) => {
 
 document.getElementById("input").onsubmit = function (e) {
     e.preventDefault();
-
+    
     rowcol = Number(e.target.elements.rowcol.value);
     mines = Number(e.target.elements.mines.value);
 
