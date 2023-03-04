@@ -152,11 +152,11 @@ function checkAdjacentDivs(row, col) {
 }
 
 function click(e) {
-    // if(/Mobi/.test(navigator.userAgent)) {
-    //     console.log("mobil");
-    // } else {
-    //     console.log("desktop")
-    // }
+    if(/Mobi/.test(navigator.userAgent)) {
+        console.log("mobil");
+    } else {
+        console.log("desktop")
+    }
     e.preventDefault();
     console.log("e",e);
     console.log("e.target",e.target);
