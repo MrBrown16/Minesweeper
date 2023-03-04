@@ -162,11 +162,35 @@ function click(e) {
     console.log("e.target",e.target);
     console.log("e.button",e.button);
     if (e.type === "touchstart") {
+        clearTimeout(tapTimer);
         tapTimer = setTimeout(function() {
             console.log("long press");
             e.button = 2;
-            click(e);
-        }, 500);
+            if (this.classList.contains("flag")) {
+                if (this.classList.contains("mine")) {
+                    flaggedmines--;
+                }
+                console.log("flag if:",this.classList.contains("flag"));
+
+                this.classList.remove("flag");
+                console.log("flag if2:",this.classList.contains("flag"));
+                flags--;
+                console.log(flags,flaggedmines);
+            }
+            else if (!this.classList.contains("flag")) {
+                if (this.classList.contains("mine")) {
+                    flaggedmines++;
+                }
+                console.log("flag else:",this.classList.contains("flag"));
+
+                this.classList.toggle("flag");
+                console.log("flag else2:",this.classList.contains("flag"));
+
+                flags++;
+                console.log(flags,flaggedmines);
+
+            }
+        }, 1000);
     }
     else {
         clearTimeout(tapTimer);
