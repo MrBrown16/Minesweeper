@@ -27,20 +27,16 @@ document.getElementById("input").onsubmit = function (e) {
 function begin(){
     document.getElementById("rowcol").value="9";
     document.getElementById("mines").value="10";
-    console.log(begin);
 };
 
 function inter(){
     document.getElementById("rowcol").value="16";
     document.getElementById("mines").value="40";
-    console.log(inter);
-
 };
 
 function exp(){
     document.getElementById("rowcol").value="22";
     document.getElementById("mines").value="98";
-    console.log(exp);
 };
 
 function fieldCreate() {
@@ -92,13 +88,10 @@ function mineCount(cell){
 
     if ((cell.previousElementSibling)
         && (cell.previousElementSibling.dataset.mine))
-        mineNum++;
-    //console.log("prev.s",mineNum);
-
-    if ((cell.nextElementSibling)
+        mineNum++
+    else if ((cell.nextElementSibling)
         && (cell.nextElementSibling.dataset.mine))
         mineNum++;
-    //console.log("next.s",mineNum);
 
 
     let index = 0;
@@ -107,7 +100,6 @@ function mineCount(cell){
     while (beforeindex) {
         index++;
         beforeindex = beforeindex.previousElementSibling;
-        //console.log("elem helye: ",beforeindex);
     }
     if (cell.parentNode.previousElementSibling) {
         let start = (index - 1 >= 0) ? index - 1 : 0;
@@ -152,134 +144,62 @@ function checkAdjacentDivs(row, col) {
 }
 
 function click(e) {
-    if(/Mobi/.test(navigator.userAgent)) {
-        console.log("mobil");
-    } else {
-        console.log("desktop")
-    }
+    // if(/Mobi/.test(navigator.userAgent)) {console.log("mobil");}
+    // else {console.log("desktop");}
     e.preventDefault();
-    console.log("e",e);
-    console.log("e.target",e.target);
-    console.log("e.button",e.button);
-    if (e.type === "touchstart") {
-        clearTimeout(tapTimer);
-        tapTimer = setTimeout(function() {
-            console.log("long press");
-            e.button = 2;
-            if (this.classList.contains("flag")) {
-                if (this.classList.contains("mine")) {
-                    flaggedmines--;
-                }
-                console.log("flag if:",this.classList.contains("flag"));
-
-                this.classList.remove("flag");
-                console.log("flag if2:",this.classList.contains("flag"));
-                flags--;
-                console.log(flags,flaggedmines);
+    let ez = e.target;
+    clearTimeout(tapTimer);
+    if (e.button == 2) {
+        if (ez.classList.contains("flag")) {
+            if (ez.classList.contains("mine")) {
+                flaggedmines--;
             }
-            else if (!this.classList.contains("flag")) {
-                if (this.classList.contains("mine")) {
-                    flaggedmines++;
-                }
-                console.log("flag else:",this.classList.contains("flag"));
-
-                this.classList.toggle("flag");
-                console.log("flag else2:",this.classList.contains("flag"));
-
-                flags++;
-                console.log(flags,flaggedmines);
-
+            ez.classList.remove("flag");
+            flags--;
+        }
+        else if (!ez.classList.contains("flag")) {
+            if (ez.classList.contains("mine")) {
+                flaggedmines++;
             }
-        }, 1000);
+            ez.classList.toggle("flag");
+            flags++;
+        }
+
     }
     else {
-        clearTimeout(tapTimer);
-        if (e.button == 2) {
-            console.log("right click");
-            console.log("this",this);
-            //console.log("e",e);
-            console.log("flag:",this.classList.contains("flag"));
+        if (!ez.classList.contains("flag")) {
+            if ((e.target.dataset.mine) && (!uncovered == 0)) {
+                let cells = document.getElementsByClassName("col");
+                for (let i = 0; i < cells.length; i++) {
+                    cells[i].onmousedown = null;
 
-            if (this.classList.contains("flag")) {
-                if (this.classList.contains("mine")) {
-                    flaggedmines--;
                 }
-                console.log("flag if:",this.classList.contains("flag"));
+                document.getElementById("field").style.marginTop = "1%";
+                ez.classList.remove("mine");
+                ez.classList.add("bumm");
+                document.getElementById("setup").style.display = "block";
+                document.querySelector("#setup h2").innerHTML = "You died";
+                ez.style.backgroundColor = "orangered";
 
-                this.classList.remove("flag");
-                console.log("flag if2:",this.classList.contains("flag"));
-                flags--;
-                console.log(flags,flaggedmines);
-            }
-            else if (!this.classList.contains("flag")) {
-                if (this.classList.contains("mine")) {
-                    flaggedmines++;
+            } else if ((!e.target.dataset.mine) && (ez.style.backgroundColor != "green")) {
+                if (ez.style.backgroundColor != "green") {
+                    uncovered++;
                 }
-                console.log("flag else:",this.classList.contains("flag"));
-
-                this.classList.toggle("flag");
-                console.log("flag else2:",this.classList.contains("flag"));
-
-                flags++;
-                console.log(flags,flaggedmines);
-
+                ez.style.backgroundColor = "green";
+                ez.innerHTML = mineCount(ez);
+                if (mineCount(ez) === 0) {
+                    hasNoMinesAround(ez);
+                }
+            } else if ((e.target.dataset.mine) && (uncovered == 0)) {
+                fieldCreate();
             }
-            
         }
-        else {
-            if (!this.classList.contains("flag")) {
-                
-            
-                console.log("left click");
-                //console.log(e.target.dataset.mine);
-                if ((e.target.dataset.mine)&&(!uncovered==0)) {
-                    console.log("BOOM!!!");
-                    let cells = document.getElementsByClassName("col");
-                    for (let i = 0; i < cells.length; i++) {
-                        cells[i].onmousedown = null;
-                        
-                    }
-                    document.getElementById("field").style.marginTop="1%";
-                    this.classList.remove("mine");
-                    this.classList.add("bumm");
-                    document.getElementById("setup").style.display="block";
-                    document.querySelector("#setup h2").innerHTML = "You died";
-                    this.style.backgroundColor = "orangered";
 
-                } else if ((!e.target.dataset.mine)&&(this.style.backgroundColor!="green")) {
-                    console.log("zero mines");
-                    if (this.style.backgroundColor!="green") {
-                        uncovered++;
-                    }
-                    this.style.backgroundColor = "green";
-                    this.innerHTML= mineCount(this);
-                    if (mineCount(this)===0) {
-                        hasNoMinesAround(this);
-                    }
-                } else if ((e.target.dataset.mine)&&(uncovered==0)) {
-                    
-                    //let thiscell = e.target;
-                    fieldCreate();
-                    // let row = thiscell.dataset.row-1;
-                    // let col = thiscell.dataset.col-1;
-                    // let clicked = field.children[row].children[col];
-                    // console.log("clicked",clicked);
-                    // click.
-                    // var Event = EventSource
-                    // console.log("recreated")
-                }
-            }
-            
-        }
     }
     if ((flags==flaggedmines)&&(flaggedmines==mines)&&(((rowcol*rowcol)-mines)<=uncovered)) {
         document.querySelector("#setup h2").innerHTML = "You Won</br>Congratulation!!!";
         document.getElementById("setup").style.display = "block";
         document.getElementById("field").style.marginTop=0;
-
-
-
-
     }
 };
 
@@ -293,7 +213,6 @@ function hasNoMinesAround(cell) {
         const adj = checkAdjacentDivs(row,col);
         cell.dataset.ch=1;
         adj.forEach(cell => {
-            console.log("környező db szám",adj.length);
             if (cell.style.backgroundColor!="green") {
                 uncovered++;
             }
@@ -302,9 +221,6 @@ function hasNoMinesAround(cell) {
             mc = mineCount(cell);
             cell.innerHTML= mc;
             if (mc===0) {
-                // console.log("hasNoMinesAround if");
-                // console.log(cell);
-
                 hasNoMinesAround(cell);
             }
         });
@@ -312,25 +228,19 @@ function hasNoMinesAround(cell) {
 };
 
 
-
-// Add touchstart event listener
 document.addEventListener("touchstart", function(e){
-    // Clear any existing tap timer
-    clearTimeout(tapTimer);
-    // Start a new tap timer to detect if this is a long press
-    tapTimer = setTimeout(function(){
-        // If the timer fires, simulate a right-click event
+    // Start a timeout to simulate a right-click after 500ms
+    this.longPressTimeout = setTimeout(function() {
         simulateRightClick(e);
-    }, 500); // Change this value to adjust the length of the tap and hold required for a right-click
+    }, 500);
 });
 
-// Add touchend and touchmove event listeners
-document.addEventListener("touchend", function(){
-    // If the user releases their finger before the timer fires, cancel the timer
-    clearTimeout(tapTimer);
+document.addEventListener("touchend", function(e){
+    // Clear the timeout to prevent the right-click from firing
+    clearTimeout(this.longPressTimeout);
 });
 
-document.addEventListener("touchmove", function(){
+document.addEventListener("touchmove", function(e){
     // If the user moves their finger before the timer fires, cancel the timer
     clearTimeout(tapTimer);
 });
@@ -338,7 +248,9 @@ document.addEventListener("touchmove", function(){
 // Simulate a right-click event
 function simulateRightClick(e){
     // Prevent the default context menu from appearing
-    e.preventDefault();
+    if (e.cancelable) {
+        e.preventDefault();
+      }
     // Create a new mouse event with the right-click button pressed
     var rightClickEvent = new MouseEvent("contextmenu", {
         bubbles: true,
@@ -351,4 +263,5 @@ function simulateRightClick(e){
     });
     // Dispatch the mouse event on the target element
     e.target.dispatchEvent(rightClickEvent);
+    click(rightClickEvent);
 }
