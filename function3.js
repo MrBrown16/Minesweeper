@@ -134,7 +134,7 @@ function checkAdjacentDivs(row, col) {
             if (r === row && c === col) continue; // skip the chosen div
             const divElem = document.querySelector(`#field [data-row='${r}'][data-col='${c}']`);
         
-            if ((divElem)&&(!divElem.dataset.checked)) {
+            if ((divElem)&&(!divElem.dataset.ch==1)) {
                 adjacentDivs.push(divElem);
                 
             }
