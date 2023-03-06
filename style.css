@@ -49,6 +49,8 @@ button{
     margin: 0 auto;
     margin-top: 5%;
     margin-bottom: 25%;
+    user-select: none;
+    -webkit-user-select: none;
 }
 .row{
     display:flex;
@@ -56,6 +58,8 @@ button{
     flex-direction: row;
     width: max-content;
     align-self: center;
+    user-select: none;
+    -webkit-user-select: none;
 }
 .col{
     margin: 0 auto;
@@ -67,11 +71,14 @@ button{
     font-size: 2rem;
     text-align: center;
     box-shadow: 1px 2px 2px 1px inset darkorange;
+    user-select: none;
+    -webkit-user-select: none;
 }
 .flag{
     background-image: url(./img/flag.png);
     background-position: center;
     background-size: cover;
+    -webkit-user-select: none;
 }
 .mine{
     /* background-image: url(./img/akna1.png); */
