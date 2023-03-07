@@ -81,10 +81,10 @@ button{
     -webkit-user-select: none;
 }
 .mine{
-    /* background-image: url(./img/akna1.png); */
+    background-image: url(./img/akna1.png);
     background-position: center;
     background-size: cover;
-    visibility: hidden;
+    visibility: visible;
     visibility: inherit;
     
 }

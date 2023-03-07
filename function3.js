@@ -87,10 +87,10 @@ function mineCount(cell){
 
 
     if ((cell.previousElementSibling)
-        && (cell.previousElementSibling.dataset.mine))
+        && (cell.previousElementSibling.dataset.mine == 1))
         mineNum++
     else if ((cell.nextElementSibling)
-        && (cell.nextElementSibling.dataset.mine))
+        && (cell.nextElementSibling.dataset.mine == 1))
         mineNum++;
 
 
@@ -106,7 +106,7 @@ function mineCount(cell){
         let end = (index + 1 < rowcol) ? index + 1 : index;
 
         for (let i = start; i <= end; i++) {
-            if (cell.parentNode.previousElementSibling.children[i].dataset.mine) {
+            if (cell.parentNode.previousElementSibling.children[i].dataset.mine == 1) {
                 mineNum++;
             }
 
@@ -117,7 +117,7 @@ function mineCount(cell){
         let end = (index + 1 < rowcol) ? index + 1 : index;
 
         for (let i = start; i <= end; i++) {
-            if (cell.parentNode.nextElementSibling.children[i].dataset.mine) {
+            if (cell.parentNode.nextElementSibling.children[i].dataset.mine == 1) {
                 mineNum++;
             }
 
@@ -131,12 +131,17 @@ function checkAdjacentDivs(row, col) {
     const adjacentDivs = [];
     for (let r = row - 1; r <= row + 1; r++) {
         for (let c = col - 1; c <= col + 1; c++) {
-            if (r === row && c === col) continue; // skip the chosen div
+            //if (r === row && c === col) continue; // skip the chosen div
             const divElem = document.querySelector(`#field [data-row='${r}'][data-col='${c}']`);
-        
-            if ((divElem)&&(!divElem.dataset.ch==1)) {
+
+            if ((divElem)&&(!divElem.dataset.checked)) {
                 adjacentDivs.push(divElem);
-                
+                console.log(mineCount(divElem));
+
+                // console.log("adjacent !divelem.dataset.checked"+divElem+"r:"+r+"row"+row+"c:"+c+"col"+col);
+            }else{
+                // console.log("adjacent divelem.dataset.checked"+divElem+"r:"+r+"row"+row+"c:"+c+"col"+col);
+
             }
         }
     }
@@ -168,12 +173,12 @@ function click(e) {
     }
     else {
         if (!ez.classList.contains("flag")) {
-            if ((e.target.dataset.mine) && (!uncovered == 0)) {
+            if ((e.target.dataset.mine == 1) && (!uncovered == 0)) {
                 let cells = document.getElementsByClassName("col");
-                for (let i = 0; i < cells.length; i++) {
-                    cells[i].onmousedown = null;
+                // for (let i = 0; i < cells.length; i++) {
+                //     cells[i].onmousedown = null;
 
-                }
+                // }
                 document.getElementById("field").style.marginTop = "1%";
                 ez.classList.remove("mine");
                 ez.classList.add("bumm");
@@ -181,16 +186,24 @@ function click(e) {
                 document.querySelector("#setup h2").innerHTML = "You died";
                 ez.style.backgroundColor = "orangered";
 
-            } else if ((!e.target.dataset.mine) && (ez.style.backgroundColor != "green")) {
+            } else if ((!e.target.dataset.mine == 1) && (ez.style.backgroundColor != "green")) {
                 if (ez.style.backgroundColor != "green") {
                     uncovered++;
                 }
                 ez.style.backgroundColor = "green";
+                let count = mineCount(ez);
+                console.log(count)
                 ez.innerHTML = mineCount(ez);
                 if (mineCount(ez) === 0) {
+                    console.log("minecount == 0"+ mineCount(ez))
                     hasNoMinesAround(ez);
                 }
-            } else if ((e.target.dataset.mine) && (uncovered == 0)) {
+                document.getElementsByClassName
+                let allcol = document.getElementsByClassName("col");
+                allcol.forEach(e => {
+                    e.dataset.ch = 0;
+                });
+            } else if ((e.target.dataset.mine == 1) && (uncovered == 0)) {
                 fieldCreate();
             }
         }
@@ -206,24 +219,26 @@ function click(e) {
 function hasNoMinesAround(cell) {
 
 
-    if (cell.dataset.ch==="0") {
+    if (!cell.dataset.mine == 1) {
 
         const row = parseInt(cell.dataset.row);
         const col = parseInt(cell.dataset.col);
         const adj = checkAdjacentDivs(row,col);
         cell.dataset.ch=1;
         adj.forEach(cell => {
-            if (cell.style.backgroundColor!="green") {
+            if ((cell.dataset.ch == 0)&&(cell.style.backgroundColor!="green")) {
                 uncovered++;
             }
             cell.style.backgroundColor = "green";
-
+            
             mc = mineCount(cell);
             cell.innerHTML= mc;
             if (mc===0) {
                 hasNoMinesAround(cell);
             }
+            
         });
+        
     }
 };
 
