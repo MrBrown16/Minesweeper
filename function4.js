@@ -1,13 +1,13 @@
 let rowcol;
 let mines;
-// const cells = {id, value};
 const cellsArray = [];
+const minesArray = [];
+let checkedCells;
 //id === index;
 //{id : null, value : null}
 //value-types: [1 = not_mine, 2 = mine, 3 = flagged_mine, 4 = flagged_not_mine, 5 = exposed ]
 
-let flags = 0;
-let flaggedmines = 0;
+let counter = ((rowcol*rowcol)-mines)+3;
 let uncovered = 0;
 let tapTimer;
 
@@ -47,9 +47,10 @@ function exp(){
 
 function fieldCreate() {
     document.getElementById("setup").style.display = "none";
-    // uncovered=0;
-    // flaggedmines=0;
-    // flags=0;
+    
+    uncovered=0;
+    // Initialize an array to keep track of the state of each cell
+    checkedCells = new Array((rowcol * rowcol)-1).fill(false);
     let field = document.getElementById("field");
     field.style.marginTop="5%";
     field.innerHTML = "";
@@ -67,17 +68,15 @@ function fieldCreate() {
             ezid++;
             col.style.width=colwidth;
             col.onmousedown = click;
-            
-            // cells = ;
-            cellsArray.push({value : 1 });
+            cellsArray.push({ value : 1 });
             row.appendChild(col);
         };
         field.appendChild(row);
     };
-    console.log("cellsArray: ", cellsArray);
-    console.log("typeof(cellsArray[1].value): ", typeof(cellsArray[1].value));
-    minePlace();
     // console.log("cellsArray: ", cellsArray);
+    // console.log("typeof(cellsArray[1].value): ", typeof(cellsArray[1].value));
+    minePlace();
+    console.log("cellsArray: ", cellsArray);
 
 };
 
@@ -91,241 +90,192 @@ function minePlace() {
         if ( c.value == 2 ) i--;
         else {
             c.value = 2;
-            // c.classList.add("mine");
+            minesArray.push(x);
         }
     }
 }
 
 function mineCount(id){ //needs the id of the div
     let mineNum = 0;
-    console.log("id: ", id);
-    console.log(cellsArray);
+    // console.log("id: ", id);
+    // console.log(cellsArray);
     const adjacent = checkAdjacentDivs(id);
-    console.log("adjacent: ", adjacent);
+    // console.log("adjacent: ", adjacent);
     adjacent.forEach(e => {
-        console.log("typeof(cellsArray[1].value): ", typeof(cellsArray[1].value));
-        console.log("forEach e: ",e,"id: ", id);
+        // console.log("typeof(cellsArray[1].value): ", typeof(cellsArray[1].value));
+        // console.log("forEach e: ",e,"id: ", id);
         if (cellsArray[e].value == 2) {
-            console.log("if value 2 e: ",e,"id: ", id);
+            // console.log("if value 2 e: ",e,"id: ", id);
             mineNum++;
+            // console.log("mineCount,minenum++");
         }else if (cellsArray[e].value == 3) {
             mineNum++;
-            console.log("elif value 3 e: ",e,"id: ", id);
+            // console.log("mineCount,minenum++");
+            // console.log("elif value 3 e: ",e,"id: ", id);
         }
     });
-    console.log("minenum: ", mineNum);
+    // console.log("minenum: ", mineNum);
     return mineNum;
 };
 
-// function checkAdjacentDivs(id) {
-//     const adjacentDivs = [];
-//     const localid = Number(id);
-//     const col = localid % rowcol;
-//     const row = Math.floor(localid / rowcol);
+function checkAdjacentDivs(id) {
+    const adjacentDivs = [];
+    const localid = Number(id);
+    const col = localid % rowcol;
+    const row = Math.floor(localid / rowcol);
+    console.log("col",col,"row",row);
 
-//     // Top-left corner
-//     if (row === 0 && col === 0) {
-//         adjacentDivs.push(localid + 1, localid + rowcol, localid + rowcol + 1);
-//     }
-//     // Top-right corner
-//     else if (row === 0 && col === rowcol - 1) {
-//         adjacentDivs.push(localid - 1, localid + rowcol, localid + rowcol - 1);
-//     }
-//     // Bottom-left corner
-//     else if (row === rowcol - 1 && col === 0) {
-//         adjacentDivs.push(localid - rowcol, localid - rowcol + 1, localid + 1);
-//     }
-//     // Bottom-right corner
-//     else if (row === rowcol - 1 && col === rowcol - 1) {
-//         adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - 1);
-//     }
-//     // Top edge
-//     else if (row === 0) {
-//         adjacentDivs.push(localid - 1, localid + 1, localid + rowcol - 1, localid + rowcol, localid + rowcol + 1);
-//     }
-//     // Bottom edge
-//     else if (row === rowcol - 1) {
-//         adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - rowcol + 1, localid - 1, localid + 1);
-//     }
-//     // Left edge
-//     else if (col === 0) {
-//         adjacentDivs.push(localid - rowcol, localid - rowcol + 1, localid + 1, localid + rowcol, localid + rowcol + 1);
-//     }
-//     // Right edge
-//     else if (col === rowcol - 1) {
-//         adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - 1, localid + rowcol - 1, localid + rowcol);
-//     }
-//     // Inner cells
-//     else {
-//         adjacentDivs.push(
-//             localid - rowcol - 1, localid - rowcol, localid - rowcol + 1,
-//             localid - 1, localid + 1,
-//             localid + rowcol - 1, localid + rowcol, localid + rowcol + 1
-//         );
-//     }
-//     console.log("check end adjacentdivs: ", adjacentDivs);
-//     //return adjacentDivs.filter(adjacentId => adjacentId >= 0 && adjacentId < rowcol * rowcol).map(adjacentId => Number(adjacentId));
-//     return adjacentDivs.filter(adjacentId => {
-//         const row = Math.floor(adjacentId / rowcol);
-//         const col = adjacentId % rowcol;
-//         return adjacentId >= 0 && adjacentId < rowcol * rowcol && row >= 0 && row < rowcol && col >= 0 && col < rowcol;
-//       });
+    // Top-left corner
+    if (row === 0 && col === 0) {
+        adjacentDivs.push(localid + 1, localid + rowcol, localid + rowcol + 1);
+        console.log("Top-left corner");
+    }
+    // Top-right corner
+    else if (row === 0 && col === rowcol - 1 && localid !== rowcol-1) {
+        adjacentDivs.push(localid - 1, localid + rowcol, localid + rowcol - 1);
+        console.log("Top-right corner");
+    }
+    // Bottom-left corner
+    else if (row === rowcol - 1 && col === 0) {
+        adjacentDivs.push(localid - rowcol, localid - rowcol + 1, localid + 1);
+        console.log("Bottom-left corner");
+    }
+    // Bottom-right corner
+    else if (localid === rowcol * rowcol - 1 || (row === rowcol - 1 && col === rowcol - 1)) {
+        adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - 1);
+        console.log("Bottom-right corner");
+    }
+    // Top edge
+    else if (row === 0) {
+        adjacentDivs.push(localid - 1, localid + 1, localid + rowcol - 1, localid + rowcol, localid + rowcol + 1);
+        console.log("Top edge");
+    }
+    // Bottom edge
+    else if (row === rowcol - 1) {
+        adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - rowcol + 1, localid - 1, localid + 1);
+        console.log("Bottom edge");
+    }
+    // Left edge
+    else if (col === 0) {
+        adjacentDivs.push(localid - rowcol, localid - rowcol + 1, localid + 1, localid + rowcol, localid + rowcol + 1);
+        console.log("Left edge");
+
+    }
+    // Right edge
+    else if (col === rowcol - 1) {
+        adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - 1, localid + rowcol - 1, localid + rowcol);
+        console.log("Right edge");
+    }
+    // Inner cells
+    else {
+        adjacentDivs.push(
+            localid - rowcol - 1, localid - rowcol, localid - rowcol + 1,
+            localid - 1, localid + 1,
+            localid + rowcol - 1, localid + rowcol, localid + rowcol + 1
+        );
+        console.log("Inner cells");
+    }
+    console.log("check end adjacentdivs: ", adjacentDivs);
+    return adjacentDivs.filter(adjacentId => adjacentId >= 0 && adjacentId < rowcol * rowcol).map(adjacentId => Number(adjacentId));
+    // return adjacentDivs.filter(adjacentId => {
+    //     const row = Math.floor(adjacentId / rowcol);
+    //     const col = adjacentId % rowcol;
+    //     return adjacentId >= 0 && adjacentId < rowcol * rowcol && row >= 0 && row < rowcol && col >= 0 && col < rowcol;
+    //   });
       
-// }
-  
-  
-  
-
-
-// function checkAdjacentDivs(id) { //needs the id of the div
-//     const adjacentDivs = [];
-//     let localcellid = id;
-//     let localcell = id+1;
-//     let col = localcell % rowcol;
-//     if ((col == 1)&&(localcell <= rowcol)) {  //első cella, első sor
-//         adjacentDivs.push((localcellid+1), (localcellid+22), (localcellid+23));
-//         console.log(" check 1/1 adjacentdivs: ", adjacentDivs);
-//     } else if ((col == 0)&&(localcell <= rowcol)) { //utolsó cella, első sor
-//         adjacentDivs.push((localcellid-1), (localcellid+21), (localcellid+22));
-//         console.log(" check 1/2 adjacentdivs: ", adjacentDivs);
-//     }else if ((col == 1)&&(localcell > (rowcol * (rowcol - 1)))) {  //első cella, utolsó sor
-//         adjacentDivs.push((localcellid-22), (localcellid-21), (localcellid+1))
-//         console.log(" check 1/3 adjacentdivs: ", adjacentDivs);
-//     }else if ((col == 0)&&(localcell > (rowcol * (rowcol - 1)))) { //utolsó cella, utolsó sor
-//         adjacentDivs.push((localcellid-23), (localcellid-22), (localcellid-1))
-//         console.log(" check 1/4 adjacentdivs: ", adjacentDivs);
-//     }else if (col == 1) {  //első cella
-//         adjacentDivs.push((localcellid-22), (localcellid-21), (localcellid+1), (localcellid+22), (localcellid+23));
-//         console.log(" check 1/5 adjacentdivs: ", adjacentDivs);
-//     }else if (col == 0) { //utolsó cella
-//         adjacentDivs.push((localcellid-23), (localcellid-22), (localcellid-1), (localcellid+21), (localcellid+22));
-//         console.log(" check 1/6 adjacentdivs: ", adjacentDivs);
-//     }else{ // belső cellák (minden irányban van pontosan egy cella kijjebb). (remélhetőleg nem lesz olyan cella ami kívül esik a korábbi feltételeken, és nem belső cella)
-//         adjacentDivs.push((localcellid-23), (localcellid-22), (localcellid-21), (localcellid-1), (localcellid+1), (localcellid+21), (localcellid+22), (localcellid+23));
-//         console.log(" check 1/7 adjacentdivs: ", adjacentDivs);
-//     }
-//     console.log("check end adjacentdivs: ", adjacentDivs);
-//     return adjacentDivs;
-// }
+}
 
 function click(e) {
-    // if(/Mobi/.test(navigator.userAgent)) {console.log("mobil");}
-    // else {console.log("desktop");}
     e.preventDefault();
-    let ez = e.target;
-    let id = e.target.id;
-    let value = cellsArray[id].value;
-    let len = cellsArray.length;
-    console.log("clicked ", e, "id: ",id);
-    console.log("cellsArray.length ", len);
 
-    clearTimeout(tapTimer);
-    if (e.button == 2) { //right-click
-        console.log("right-clicked ", e, "id: ",id);
-
-        if (cellsArray[id].value == 3) { // type 3
-            //type 3 flagged_mine  -->> type 2 mine
-            ez.classList.remove("flag");
-            cellsArray[id].value = 2;
-            flaggedmines--;
+    let id = Number(e.target.id);
+    const value = cellsArray[id].value;
+    if (value == 5) {
+        return; //Absolutely Nothing
+    } else {
+        if (counter < 3) {
+            won();
         }
-        else if (cellsArray[id].value == 2) { //type 2 mine  -->> type 3 flagged_mine
-            
-            ez.classList.toggle("flag");
-            cellsArray[id].value = 3;
-            flaggedmines++;
-        }
-        else if (cellsArray[id].value == 4) { // type 4
-            //type 4 flagged_not_mine  -->> type 1 not_mine
-            
-            ez.classList.remove("flag"); // cellsArray[id].value == 1;
-            cellsArray[id].value = 1;
-            flags--;
-        }
-        else if (cellsArray[id].value == 1) { //type 1 not_mine  -->> type 4 flagged_not_mine
-
-            ez.classList.toggle("flag");
-            cellsArray[id].value = 4;
-            flags++;
-        }
-
-    }
-    else { //left click
-        console.log("left-clicked ", e, "id: ",id);
-        if ((cellsArray[id].value != 3) && (cellsArray[id].value != 4)) { //not flagged clickable
-            console.log("not flagged left-clicked ", e, "id: ",id);
-            if ((cellsArray[id].value == 2) && (!uncovered == 0)) { //type 2 mine -->> bumm  element.classList.add("bumm"); (mines become visible, should 
-                                                                    //differentiate between flagged and not flagged)
-                console.log("clicked bumm", e, "id: ",id);
-                // let cells = document.getElementsByClassName("col");
-                document.getElementById("field").style.marginTop = "1%";
-                // ez.classList.remove("mine");
-                ez.classList.add("bumm");
-                document.getElementById("setup").style.display = "block";
-                document.querySelector("#setup h2").innerHTML = "You died";
-                ez.style.backgroundColor = "orangered";
-
-            } else if ((cellsArray[id].value != 2) && (ez.style.backgroundColor != "green")) { //type 1 not_mine -->> type 5 exposed
-                console.log("clicked not mine", e, "id: ",id);
-
-                if (ez.style.backgroundColor != "green") {
-                    uncovered++;
-                }
-                ez.style.backgroundColor = "green";
-                let minecount = mineCount(id); // let minecount = mineCount(id);
-                console.log(minecount)
-                ez.innerHTML = minecount; //ez.innerHTML = mineount;
-                if (minecount == 0) { //minecount == 0 (no mines around)
-                    console.log("minecount == 0", mineCount(id), id);
-                    hasNoMinesAround(id); // hasNoMinesAround(id)
-                }
-                // let allcol = document.getElementsByClassName("col");
-                // allcol.forEach(e => {
-                //     e.dataset.ch = 0;
-                // });
-            } else if ((cellsArray[id].value == 2) && (uncovered == 0)) { // first click and type 2 recreate field so you dont loose instantly (should open the clicked cell)
-                fieldCreate();
-                console.log("clicked first mine recreated", e, "id: ",id);
-
-            }
-            else{
-                console.log("left-clicked no results", e, "id: ",id);
-            }
-            //else if type 3 or 4 not clickable
-        }
-
-    }
-    // if ((flags==flaggedmines)&&(flaggedmines==mines)&&(((rowcol*rowcol)-mines)<=uncovered)) {
-    //     document.querySelector("#setup h2").innerHTML = "You Won</br>Congratulation!!!";
-    //     document.getElementById("setup").style.display = "block";
-    //     document.getElementById("field").style.marginTop=0;
-    // }
-};
-
-function hasNoMinesAround(id) { //called only when mineCount(id) == 0;
-
-
-    if (cellsArray[id].value == 1) { //type 1 not_mine
-
-        const adj = checkAdjacentDivs(id);
-        document.getElementById(id).dataset.ch=1;
-        adj.forEach(id => {
-            if ((document.getElementById(id).dataset.ch == 0)&&(cellsArray[id].value != 5)) { //not checked and not exposed (type != 5)
-                uncovered++;
-            }
-            document.getElementById(id).style.backgroundColor = "green"; //
-            cellsArray[id].value = 1;
-            mc = mineCount(id);
-            cellsArray[id].innerHTML= mc;
-            if (mc===0) { //found another adjacent cell with no mines around
-                hasNoMinesAround(id);
-            }
-            
-        });
+        uncovered++;
+        let ez = e.target;
         
+        clearTimeout(tapTimer);
+        
+        // console.log("value", value);
+        // console.log("clicked ", e, "id: ", id);
+        // console.log("cellsArray.length ", len);
+
+        if (e.button == 2) { //right-click
+            // console.log("right-clicked ", e, "id: ", id);
+
+            if (value == 3) { //type 3 flagged_mine  -->> type 2 mine
+                
+                ez.classList.remove("flag");
+                cellsArray[id].value = 2;
+            }
+            else if (value == 2) { //type 2 mine  -->> type 3 flagged_mine
+
+                ez.classList.toggle("flag");
+                cellsArray[id].value = 3;
+            }
+            else if (value == 4) { //type 4 flagged_not_mine  -->> type 1 not_mine
+                
+                ez.classList.remove("flag"); 
+                cellsArray[id].value = 1;
+            }
+            else if (value == 1) { //type 1 not_mine  -->> type 4 flagged_not_mine
+
+                ez.classList.toggle("flag");
+                cellsArray[id].value = 4;
+            }
+
+        }
+        else { //left click
+
+            if (value == 3) {
+                return; //nothing
+            } else if (value == 4) {
+                return; //nothing
+            } else if (value == 1) {
+                checkCell(id); 
+            } else if ((value == 2)&&(uncovered == 0)) {
+                fieldCreate(); //TODO: better way for not leting user instantlose
+            } else if (value == 2) {
+                bumm(ez);
+            }
+        }  
     }
+
 };
 
+function bumm(ez) {
+    document.getElementById("field").style.marginTop = "1%";
+    document.getElementById("setup").style.display = "block";
+    document.querySelector("#setup h2").innerHTML = "You died";
+    
+    minesArray.forEach(id => {
+        if (cellsArray[id].value == 3) {
+            document.getElementById(id).classList.remove("flag");
+            document.getElementById(id).classList.add("mine");
+            document.getElementById(id).classList.add("flaggedmine");
+        }else if (cellsArray[id].value == 2) {
+            document.getElementById(id).classList.add("mine");
+        }
+    });
+    ez.classList.remove("mine");
+    ez.classList.add("bumm");
+}
+
+function won() { 
+    if ((!cellsArray.includes(2))&&(!cellsArray.includes(1))&&(!cellsArray.includes(4))) {
+        document.querySelector("#setup h2").innerHTML = "You Won</br>Congratulation!!!";
+        document.getElementById("setup").style.display = "block";
+        document.getElementById("field").style.marginTop=0;
+        minesArray.forEach(id => {
+            document.getElementById(id).classList.add("flaggedmine");
+        });
+    }
+}
 
 document.addEventListener("touchstart", function(e){
     // Start a timeout to simulate a right-click after 500ms
@@ -363,4 +313,35 @@ function simulateRightClick(e){
     // Dispatch the mouse event on the target element
     e.target.dispatchEvent(rightClickEvent);
     click(rightClickEvent);
+}
+
+function checkCell(id) { //id represents a not flagged cell called from the outside only when not mine
+    // Check if the cell is a mine
+    if (cellsArray[id].value == 2) {
+        return;
+    }   
+    // Check if the cell has already been checked
+    if (checkedCells[id]) {
+        return;
+    }
+
+    // Mark the cell as checked
+    checkedCells[id] = true;
+    counter--;
+    let mc = mineCount(id);
+
+    if (mc == 0) {
+        const adj = checkAdjacentDivs(id);
+        adj.forEach(id => {
+            document.getElementById(id).style.backgroundColor = "green";
+            document.getElementById(id).innerHTML = mc;
+            cellsArray[id].value = 5;
+            checkCell(id);
+        });
+        document.getElementById(id).innerHTML = "";
+    } else {
+        document.getElementById(id).innerHTML = mc;
+        document.getElementById(id).style.backgroundColor = "green";
+        cellsArray[id].value = 5;
+    }
 }

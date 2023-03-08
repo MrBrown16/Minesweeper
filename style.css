@@ -68,7 +68,7 @@ button{
     aspect-ratio: 1/1;
     background-color: orangered;
     border: 1px solid black;
-    font-size: 2rem;
+    font-size: 3vw;
     text-align: center;
     box-shadow: 1px 2px 2px 1px inset darkorange;
     user-select: none;
@@ -78,22 +78,31 @@ button{
     background-image: url(./img/flag.png);
     background-position: center;
     background-size: cover;
+    user-select: none;
     -webkit-user-select: none;
 }
 .mine{
     background-image: url(./img/akna1.png);
     background-position: center;
     background-size: cover;
-    visibility: visible;
+    background-color: orangered;
+    /* visibility: visible;
     visibility: inherit;
-    
+     */
 }
 .bumm{
     background-image: url(./img/akna3.png);
     background-position: center;
     background-size: cover;
-    
+    background-color: orangered;
+
 }
+.flaggedmine{
+    background-color: blue;
+}
+/* .exposed{
+    background-color: green;
+} */
 footer{
     text-align: center;
 }
