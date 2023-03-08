@@ -117,36 +117,96 @@ function mineCount(id){ //needs the id of the div
     return mineNum;
 };
 
-function checkAdjacentDivs(id) { //needs the id of the div
-    const adjacentDivs = [];
-    let localcellid = id;
-    let localcell = id+1;
-    let col = localcell % rowcol;
-    if ((col == 1)&&(localcell <= rowcol)) {  //első cella, első sor
-        adjacentDivs.push((localcellid+1), (localcellid+22), (localcellid+23));
-        console.log(" check 1/1 adjacentdivs: ", adjacentDivs);
-    } else if ((col == 0)&&(localcell <= rowcol)) { //utolsó cella, első sor
-        adjacentDivs.push((localcellid-1), (localcellid+21), (localcellid+22));
-        console.log(" check 1/2 adjacentdivs: ", adjacentDivs);
-    }else if ((col == 1)&&(localcell > (rowcol * (rowcol - 1)))) {  //első cella, utolsó sor
-        adjacentDivs.push((localcellid-22), (localcellid-21), (localcellid+1))
-        console.log(" check 1/3 adjacentdivs: ", adjacentDivs);
-    }else if ((col == 0)&&(localcell > (rowcol * (rowcol - 1)))) { //utolsó cella, utolsó sor
-        adjacentDivs.push((localcellid-23), (localcellid-22), (localcellid-1))
-        console.log(" check 1/4 adjacentdivs: ", adjacentDivs);
-    }else if (col == 1) {  //első cella
-        adjacentDivs.push((localcellid-22), (localcellid-21), (localcellid+1), (localcellid+22), (localcellid+23));
-        console.log(" check 1/5 adjacentdivs: ", adjacentDivs);
-    }else if (col == 0) { //utolsó cella
-        adjacentDivs.push((localcellid-23), (localcellid-22), (localcellid-1), (localcellid+21), (localcellid+22));
-        console.log(" check 1/6 adjacentdivs: ", adjacentDivs);
-    }else{ // belső cellák (minden irányban van pontosan egy cella kijjebb). (remélhetőleg nem lesz olyan cella ami kívül esik a korábbi feltételeken, és nem belső cella)
-        adjacentDivs.push((localcellid-23), (localcellid-22), (localcellid-21), (localcellid-1), (localcellid+1), (localcellid+21), (localcellid+22), (localcellid+23));
-        console.log(" check 1/7 adjacentdivs: ", adjacentDivs);
-    }
-    console.log("check end adjacentdivs: ", adjacentDivs);
-    return adjacentDivs;
-}
+// function checkAdjacentDivs(id) {
+//     const adjacentDivs = [];
+//     const localid = Number(id);
+//     const col = localid % rowcol;
+//     const row = Math.floor(localid / rowcol);
+
+//     // Top-left corner
+//     if (row === 0 && col === 0) {
+//         adjacentDivs.push(localid + 1, localid + rowcol, localid + rowcol + 1);
+//     }
+//     // Top-right corner
+//     else if (row === 0 && col === rowcol - 1) {
+//         adjacentDivs.push(localid - 1, localid + rowcol, localid + rowcol - 1);
+//     }
+//     // Bottom-left corner
+//     else if (row === rowcol - 1 && col === 0) {
+//         adjacentDivs.push(localid - rowcol, localid - rowcol + 1, localid + 1);
+//     }
+//     // Bottom-right corner
+//     else if (row === rowcol - 1 && col === rowcol - 1) {
+//         adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - 1);
+//     }
+//     // Top edge
+//     else if (row === 0) {
+//         adjacentDivs.push(localid - 1, localid + 1, localid + rowcol - 1, localid + rowcol, localid + rowcol + 1);
+//     }
+//     // Bottom edge
+//     else if (row === rowcol - 1) {
+//         adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - rowcol + 1, localid - 1, localid + 1);
+//     }
+//     // Left edge
+//     else if (col === 0) {
+//         adjacentDivs.push(localid - rowcol, localid - rowcol + 1, localid + 1, localid + rowcol, localid + rowcol + 1);
+//     }
+//     // Right edge
+//     else if (col === rowcol - 1) {
+//         adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - 1, localid + rowcol - 1, localid + rowcol);
+//     }
+//     // Inner cells
+//     else {
+//         adjacentDivs.push(
+//             localid - rowcol - 1, localid - rowcol, localid - rowcol + 1,
+//             localid - 1, localid + 1,
+//             localid + rowcol - 1, localid + rowcol, localid + rowcol + 1
+//         );
+//     }
+//     console.log("check end adjacentdivs: ", adjacentDivs);
+//     //return adjacentDivs.filter(adjacentId => adjacentId >= 0 && adjacentId < rowcol * rowcol).map(adjacentId => Number(adjacentId));
+//     return adjacentDivs.filter(adjacentId => {
+//         const row = Math.floor(adjacentId / rowcol);
+//         const col = adjacentId % rowcol;
+//         return adjacentId >= 0 && adjacentId < rowcol * rowcol && row >= 0 && row < rowcol && col >= 0 && col < rowcol;
+//       });
+      
+// }
+  
+  
+  
+
+
+// function checkAdjacentDivs(id) { //needs the id of the div
+//     const adjacentDivs = [];
+//     let localcellid = id;
+//     let localcell = id+1;
+//     let col = localcell % rowcol;
+//     if ((col == 1)&&(localcell <= rowcol)) {  //első cella, első sor
+//         adjacentDivs.push((localcellid+1), (localcellid+22), (localcellid+23));
+//         console.log(" check 1/1 adjacentdivs: ", adjacentDivs);
+//     } else if ((col == 0)&&(localcell <= rowcol)) { //utolsó cella, első sor
+//         adjacentDivs.push((localcellid-1), (localcellid+21), (localcellid+22));
+//         console.log(" check 1/2 adjacentdivs: ", adjacentDivs);
+//     }else if ((col == 1)&&(localcell > (rowcol * (rowcol - 1)))) {  //első cella, utolsó sor
+//         adjacentDivs.push((localcellid-22), (localcellid-21), (localcellid+1))
+//         console.log(" check 1/3 adjacentdivs: ", adjacentDivs);
+//     }else if ((col == 0)&&(localcell > (rowcol * (rowcol - 1)))) { //utolsó cella, utolsó sor
+//         adjacentDivs.push((localcellid-23), (localcellid-22), (localcellid-1))
+//         console.log(" check 1/4 adjacentdivs: ", adjacentDivs);
+//     }else if (col == 1) {  //első cella
+//         adjacentDivs.push((localcellid-22), (localcellid-21), (localcellid+1), (localcellid+22), (localcellid+23));
+//         console.log(" check 1/5 adjacentdivs: ", adjacentDivs);
+//     }else if (col == 0) { //utolsó cella
+//         adjacentDivs.push((localcellid-23), (localcellid-22), (localcellid-1), (localcellid+21), (localcellid+22));
+//         console.log(" check 1/6 adjacentdivs: ", adjacentDivs);
+//     }else{ // belső cellák (minden irányban van pontosan egy cella kijjebb). (remélhetőleg nem lesz olyan cella ami kívül esik a korábbi feltételeken, és nem belső cella)
+//         adjacentDivs.push((localcellid-23), (localcellid-22), (localcellid-21), (localcellid-1), (localcellid+1), (localcellid+21), (localcellid+22), (localcellid+23));
+//         console.log(" check 1/7 adjacentdivs: ", adjacentDivs);
+//     }
+//     console.log("check end adjacentdivs: ", adjacentDivs);
+//     return adjacentDivs;
+// }
 
 function click(e) {
     // if(/Mobi/.test(navigator.userAgent)) {console.log("mobil");}
