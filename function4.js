@@ -134,8 +134,8 @@ function checkAdjacentDivs(id) {
         console.log("Top-left corner");
     }
     // Top-right corner
-    else if (row === 0 && col === rowcol - 1 && localid !== rowcol-1) {
-        adjacentDivs.push(localid - 1, localid + rowcol, localid + rowcol - 1);
+    else if (row === 0 && col === rowcol - 1 ) {
+        adjacentDivs.push(localid - 1, localid + rowcol - 1, localid + rowcol);
         console.log("Top-right corner");
     }
     // Bottom-left corner
@@ -149,7 +149,7 @@ function checkAdjacentDivs(id) {
         console.log("Bottom-right corner");
     }
     // Top edge
-    else if (row === 0) {
+    else if (row === 0 && localid !== rowcol-1) {
         adjacentDivs.push(localid - 1, localid + 1, localid + rowcol - 1, localid + rowcol, localid + rowcol + 1);
         console.log("Top edge");
     }
@@ -196,9 +196,11 @@ function click(e) {
     if (value == 5) {
         return; //Absolutely Nothing
     } else {
-        if (counter < 3) {
-            won();
-        }
+        // if (counter < 3) {
+            
+        // }
+        //TODO:won limit
+        won();
         uncovered++;
         let ez = e.target;
         
@@ -266,6 +268,7 @@ function bumm(ez) {
         }
     });
     ez.classList.remove("mine");
+    ez.classList.remove("flaggedmine");
     ez.classList.add("bumm");
 }
 
@@ -334,9 +337,11 @@ function checkCell(id) { //id represents a not flagged cell called from the outs
     let mc = mineCount(id);
 
     if (mc == 0) {
+        document.getElementById(id).style.backgroundColor = "green";
         const adj = checkAdjacentDivs(id);
         adj.forEach(id => {
             document.getElementById(id).style.backgroundColor = "green";
+            let mc = mineCount(id);
             document.getElementById(id).innerHTML = mc;
             cellsArray[id].value = 5;
             checkCell(id);
