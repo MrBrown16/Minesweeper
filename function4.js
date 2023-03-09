@@ -47,7 +47,7 @@ function exp(){
 
 function fieldCreate() {
     document.getElementById("setup").style.display = "none";
-    
+    minesArray.splice(0,minesArray.length);
     uncovered=0;
     // Initialize an array to keep track of the state of each cell
     checkedCells = new Array((rowcol * rowcol)-1).fill(false);
@@ -56,6 +56,7 @@ function fieldCreate() {
     field.innerHTML = "";
     let fieldwidth = field.clientWidth;
     let colwidth = ((fieldwidth/rowcol)+"px");
+    let fontsize = colwidth*0.8;
     let ezid = 0;
     for (let i = 0; i < rowcol; i++) {
         let row = document.createElement("div");
@@ -67,11 +68,13 @@ function fieldCreate() {
             col.id = ezid;
             ezid++;
             col.style.width=colwidth;
+            
             col.onmousedown = click;
             cellsArray.push({ value : 1 });
             row.appendChild(col);
         };
         field.appendChild(row);
+        document.getElementById("field").style.fontSize = fontsize;
     };
     // console.log("cellsArray: ", cellsArray);
     // console.log("typeof(cellsArray[1].value): ", typeof(cellsArray[1].value));
@@ -338,7 +341,7 @@ function checkCell(id) { //id represents a not flagged cell called from the outs
             cellsArray[id].value = 5;
             checkCell(id);
         });
-        document.getElementById(id).innerHTML = "";
+        // document.getElementById(id).innerHTML = "";
     } else {
         document.getElementById(id).innerHTML = mc;
         document.getElementById(id).style.backgroundColor = "green";
