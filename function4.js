@@ -386,22 +386,28 @@ function checkCell(id) { //id represents a not flagged cell called from the outs
     counter--;
     won();
     let mc = mineCount(id);
-    let mchtml = "<p>"+mc+"</p>";
+    
     if (mc == 0) {
         document.getElementById(id).style.backgroundColor = "green";
         const adj = checkAdjacentDivs(id);
         adj.forEach(id => {
             document.getElementById(id).style.backgroundColor = "green";
             let mc = mineCount(id);
-            let mchtml = "<p>"+mc+"</p>";
-            document.getElementById(id).innerHTML = mchtml;
+            if (mc>0) {
+                let mchtml = "<p>"+mc+"</p>";
+                document.getElementById(id).innerHTML = mchtml;                
+            }
             setFontSize(id);
             cellsArray[id].value = 5;
             checkCell(id);
         });
         // document.getElementById(id).innerHTML = "";
     } else {
-        document.getElementById(id).innerHTML = mchtml;
+        if (mc>0) {
+            let mchtml = "<p>"+mc+"</p>";
+            document.getElementById(id).innerHTML = mchtml;            
+        }
+
         setFontSize(id);
         document.getElementById(id).style.backgroundColor = "green";
         cellsArray[id].value = 5;
