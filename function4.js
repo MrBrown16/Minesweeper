@@ -46,16 +46,24 @@ function exp(){
     document.getElementById("rowcol").value="22";
     document.getElementById("mines").value="98";
 };
+function setFontSize(id) {
+    let dis = document.getElementById("field").clientWidth;
+    let cellsize = dis/rowcol;
+    let font = cellsize*0.7;
+    if (font<36) {
+        let fontpx = font+"px";
+        const cell = document.getElementById(id);
+        cell.style.fontSize = fontpx; 
+    }
 
+}
 function fieldCreate() {
     
     document.getElementById("setup").style.display = "none";
-    console.log("minesarray before ",minesArray);
-    console.log("cellsarray before ",cellsArray);
+
     minesArray.splice(0,minesArray.length);
     cellsArray.splice(0,cellsArray.length);
-    console.log("minesarray after ",minesArray);
-    console.log("cellsarray after ",cellsArray);
+
     uncovered=0;
     // Initialize an array to keep track of the state of each cell
     checkedCells = new Array((rowcol * rowcol)-1).fill(false);
@@ -63,8 +71,10 @@ function fieldCreate() {
     field.style.marginTop="5%";
     field.innerHTML = "";
     let fieldwidth = field.clientWidth;
-    let colwidth = ((fieldwidth/rowcol)+"px");
-    let fontsize = colwidth*0.8;
+    let colwidth = (fieldwidth/rowcol);
+    let colwidthpx = ((fieldwidth/rowcol)+"px");
+    // let fontsize = colwidth*0.8;
+    // let fontsizepx = ((colwidth*0.8)+"px");
     ezid = 0;
     for (let i = 0; i < rowcol; i++) {
         let row = document.createElement("div");
@@ -75,19 +85,19 @@ function fieldCreate() {
             col.className = "col";
             col.id = ezid;
             ezid++;
-            col.style.width=colwidth;
-            
+            col.style.width=colwidthpx;
+            // col.style.fontSize = fontsizepx;            
             col.onmousedown = click;
             cellsArray.push({ value : 1 });
             row.appendChild(col);
         };
         field.appendChild(row);
-        document.getElementById("field").style.fontSize = fontsize;
+        // document.getElementById("field").style.fontSize = fontsizepx;
     };
     // console.log("cellsArray: ", cellsArray);
     // console.log("typeof(cellsArray[1].value): ", typeof(cellsArray[1].value));
     minePlace();
-    console.log("cellsArray: ", cellsArray);
+    // console.log("cellsArray: ", cellsArray);
     // if (recreate) {
     //     // Add a click event listener to the div
     //     var div = document.getElementById(id);
@@ -104,9 +114,9 @@ function fieldCreate() {
 function minePlace() {
     for (let i = 0; i < mines; i++) {
         let x = (Math.round(Math.random() * ((rowcol * rowcol) - 1)));
-        console.log("x: ", x);
+        // console.log("x: ", x);
         let c = cellsArray[x];
-        console.log("cellsArray[x]: ", cellsArray[x]);
+        // console.log("cellsArray[x]: ", cellsArray[x]);
 
         if ( c.value == 2 ) i--;
         else {
@@ -144,48 +154,48 @@ function checkAdjacentDivs(id) {
     const localid = Number(id);
     const col = localid % rowcol;
     const row = Math.floor(localid / rowcol);
-    console.log("col",col,"row",row);
+    // console.log("col",col,"row",row);
 
     // Top-left corner
     if (row === 0 && col === 0) {
         adjacentDivs.push(localid + 1, localid + rowcol, localid + rowcol + 1);
-        console.log("Top-left corner");
+        // console.log("Top-left corner");
     }
     // Top-right corner
     else if (row === 0 && col === rowcol - 1 ) {
         adjacentDivs.push(localid - 1, localid + rowcol - 1, localid + rowcol);
-        console.log("Top-right corner");
+        // console.log("Top-right corner");
     }
     // Bottom-left corner
     else if (row === rowcol - 1 && col === 0) {
         adjacentDivs.push(localid - rowcol, localid - rowcol + 1, localid + 1);
-        console.log("Bottom-left corner");
+        // console.log("Bottom-left corner");
     }
     // Bottom-right corner
     else if (localid === rowcol * rowcol - 1 || (row === rowcol - 1 && col === rowcol - 1)) {
         adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - 1);
-        console.log("Bottom-right corner");
+        // console.log("Bottom-right corner");
     }
     // Top edge
     else if (row === 0 && localid !== rowcol-1) {
         adjacentDivs.push(localid - 1, localid + 1, localid + rowcol - 1, localid + rowcol, localid + rowcol + 1);
-        console.log("Top edge");
+        // console.log("Top edge");
     }
     // Bottom edge
     else if (row === rowcol - 1) {
         adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - rowcol + 1, localid - 1, localid + 1);
-        console.log("Bottom edge");
+        // console.log("Bottom edge");
     }
     // Left edge
     else if (col === 0) {
         adjacentDivs.push(localid - rowcol, localid - rowcol + 1, localid + 1, localid + rowcol, localid + rowcol + 1);
-        console.log("Left edge");
+        // console.log("Left edge");
 
     }
     // Right edge
     else if (col === rowcol - 1) {
         adjacentDivs.push(localid - rowcol - 1, localid - rowcol, localid - 1, localid + rowcol - 1, localid + rowcol);
-        console.log("Right edge");
+        // console.log("Right edge");
     }
     // Inner cells
     else {
@@ -194,9 +204,9 @@ function checkAdjacentDivs(id) {
             localid - 1, localid + 1,
             localid + rowcol - 1, localid + rowcol, localid + rowcol + 1
         );
-        console.log("Inner cells");
+        // console.log("Inner cells");
     }
-    console.log("check end adjacentdivs: ", adjacentDivs);
+    // console.log("check end adjacentdivs: ", adjacentDivs);
     return adjacentDivs.filter(adjacentId => adjacentId >= 0 && adjacentId < rowcol * rowcol).map(adjacentId => Number(adjacentId));
     // return adjacentDivs.filter(adjacentId => {
     //     const row = Math.floor(adjacentId / rowcol);
@@ -207,10 +217,10 @@ function checkAdjacentDivs(id) {
 }
 
 function click(e) {
-    console.log(e);
-    // e.preventDefault();
-    console.log("e.button",e.button);
-    console.log("e.target",e.target);
+    // console.log(e);
+    // // e.preventDefault();
+    // console.log("e.button",e.button);
+    // console.log("e.target",e.target);
     let id = Number(e.target.id);
     const value = cellsArray[id].value;
     if (value == 5) {
@@ -254,7 +264,7 @@ function click(e) {
 
         }
         else { //left click
-            console.log("uncovered",uncovered);
+            // console.log("uncovered",uncovered);
 
             if (value == 3) {
                 return; //nothing
@@ -263,8 +273,8 @@ function click(e) {
             } else if (value == 1) {
                 checkCell(id); 
             } else if ((value == 2)&&(uncovered == 1)) {
-                console.log("uncovered first click redo",uncovered);
-                console.log("újragenerálva");
+                // console.log("uncovered first click redo",uncovered);
+                // console.log("újragenerálva");
                 elementId = ez.id;
                 clickElement(elementId,e);
                 //TODO: better way for not leting user instantlose
@@ -361,26 +371,32 @@ function checkCell(id) { //id represents a not flagged cell called from the outs
     if (checkedCells[id]) {
         return;
     }
+    if (cellsArray[id].value == 4) {
+        return;
+    }
 
     // Mark the cell as checked
     checkedCells[id] = true;
     counter--;
     won();
     let mc = mineCount(id);
-
+    let mchtml = "<p>"+mc+"</p>";
     if (mc == 0) {
         document.getElementById(id).style.backgroundColor = "green";
         const adj = checkAdjacentDivs(id);
         adj.forEach(id => {
             document.getElementById(id).style.backgroundColor = "green";
             let mc = mineCount(id);
-            document.getElementById(id).innerHTML = mc;
+            let mchtml = "<p>"+mc+"</p>";
+            document.getElementById(id).innerHTML = mchtml;
+            setFontSize(id);
             cellsArray[id].value = 5;
             checkCell(id);
         });
         // document.getElementById(id).innerHTML = "";
     } else {
-        document.getElementById(id).innerHTML = mc;
+        document.getElementById(id).innerHTML = mchtml;
+        setFontSize(id);
         document.getElementById(id).style.backgroundColor = "green";
         cellsArray[id].value = 5;
     }
@@ -418,41 +434,46 @@ function checkCell(id) { //id represents a not flagged cell called from the outs
 //     console.log("click event:", event, "element", element, "event.target:", event.target);
 
 // }
-function clickElement(element,event) {
-    console.log("click event:", event);
-    // Call the other function here
-    console.log("before fieldcreate click event.target:", event.target);
+// function clickElement(element,event) {
+//     console.log("click event:", event);
+//     // Call the other function here
+//     console.log("before fieldcreate click event.target:", event.target);
 
-    fieldCreate();
-    console.log("fieldcreate click event:", event);
+//     fieldCreate();
+//     console.log("fieldcreate click event:", event);
 
-    //let element = event.target.id;
-    console.log("element type",typeof(element));
-    console.log("click event:", event, "element", element, "event.target:", event.target);
-    //let id = element.target.id; 
+//     //let element = event.target.id;
+//     console.log("element type",typeof(element));
+//     console.log("click event:", event, "element", element, "event.target:", event.target);
+//     //let id = element.target.id; 
     
-    // Retrieve a reference to the new field after it has been created
-    var newField = document.getElementById(element);
-    console.log("newField type",typeof(newField));
-    console.log("newField",newField);
+//     // Retrieve a reference to the new field after it has been created
+//     var newField = document.getElementById(element);
+//     console.log("newField type",typeof(newField));
+//     console.log("newField",newField);
+
+//     document.addEventListener("DOMContentLoaded", (event) => {
+//         newField.click();
+//     });
+
     
-    // Create a new event object for the click event, using the event target from the user's click
-    if (newField) {
-        var clickEvent = new MouseEvent('click', {
-          'view': window,
-          'bubbles': true,
-          'cancelable': true,
-          'clientX': event.clientX,
-          'clientY': event.clientY,
-          'button': event.button
+//     // Create a new event object for the click event, using the event target from the user's click
+//     if (newField) {
+//         var clickEvent = new MouseEvent('click', {
+//           'view': window,
+//           'bubbles': true,
+//           'cancelable': true,
+//           'clientX': event.clientX,
+//           'clientY': event.clientY,
+//           'button': event.button
           
-        });
+//         });
         
-        // Trigger the click event on the element, with the event target from the user's click
-        newField.dispatchEvent(clickEvent);
-        console.log("click event:", event, "element", element, "event.target:", event.target);
-    }
-}
+//         // Trigger the click event on the element, with the event target from the user's click
+//         newField.dispatchEvent(clickEvent);
+//         console.log("click event:", event, "element", element, "event.target:", event.target);
+//     }
+// }
 
 
   

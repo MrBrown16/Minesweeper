@@ -41,7 +41,7 @@ button{
     
 }
 #field{
-    font-size: 16px;
+    /* font-size: 16px; */
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
@@ -63,22 +63,22 @@ button{
     -webkit-user-select: none;
 }
 .col{
-    margin: auto;
+    display: flex;
     max-width: 50px;
     max-height: 50px;
     aspect-ratio: 1/1;
     background-color: orangered;
     border: 1px solid black;
-    font-size: 2rem;
+    font-size: 1.5rem;
     text-align: center;
-    vertical-align: middle;
     box-shadow: 1px 2px 2px 1px inset darkorange;
     user-select: none;
     -webkit-user-select: none;
+    justify-content: center;
+    align-items: center;
 }
 .col text{
-    vertical-align: middle;
-    margin-top: 3px;
+    align-self:center;
 }
 .flag{
     background-image: url(./img/flag.png);
@@ -115,5 +115,8 @@ footer{
 @media only screen and (min-width: 900px) {
     h1{
         font-size: 3.2rem;
+    }
+    .col{
+        font-size: 2rem;
     }
 }
