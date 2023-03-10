@@ -48,10 +48,15 @@ function exp(){
 };
 function setFontSize(id) {
     let dis = document.getElementById("field").clientWidth;
+    console.log(dis);
     let cellsize = dis/rowcol;
+    console.log(cellsize);
     let font = cellsize*0.7;
+    console.log(font);
     if (font<36) {
         let fontpx = font+"px";
+        console.log(fontpx);
+
         const cell = document.getElementById(id);
         cell.style.fontSize = fontpx; 
     }
@@ -273,10 +278,11 @@ function click(e) {
             } else if (value == 1) {
                 checkCell(id); 
             } else if ((value == 2)&&(uncovered == 1)) {
+                fieldCreate();
                 // console.log("uncovered first click redo",uncovered);
                 // console.log("újragenerálva");
-                elementId = ez.id;
-                clickElement(elementId,e);
+                // elementId = ez.id;
+                // clickElement(elementId,e);
                 //TODO: better way for not leting user instantlose
             } else if (value == 2) {
                 bumm(ez);
