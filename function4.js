@@ -1,15 +1,17 @@
 let rowcol;
 let mines;
-const cellsArray = [];
-const minesArray = [];
+const cellsArray = new Array();
+const minesArray = new Array();
 let checkedCells;
+let ezid;
 //id === index;
 //{id : null, value : null}
 //value-types: [1 = not_mine, 2 = mine, 3 = flagged_mine, 4 = flagged_not_mine, 5 = exposed ]
-
+// let recreate = false;
 let counter = ((rowcol*rowcol)-mines)+3;
-let uncovered = 0;
+let uncovered;
 let tapTimer;
+let elementId;
 
 
 window.addEventListener('contextmenu', (event) => {
@@ -46,8 +48,14 @@ function exp(){
 };
 
 function fieldCreate() {
+    
     document.getElementById("setup").style.display = "none";
+    console.log("minesarray before ",minesArray);
+    console.log("cellsarray before ",cellsArray);
     minesArray.splice(0,minesArray.length);
+    cellsArray.splice(0,cellsArray.length);
+    console.log("minesarray after ",minesArray);
+    console.log("cellsarray after ",cellsArray);
     uncovered=0;
     // Initialize an array to keep track of the state of each cell
     checkedCells = new Array((rowcol * rowcol)-1).fill(false);
@@ -57,7 +65,7 @@ function fieldCreate() {
     let fieldwidth = field.clientWidth;
     let colwidth = ((fieldwidth/rowcol)+"px");
     let fontsize = colwidth*0.8;
-    let ezid = 0;
+    ezid = 0;
     for (let i = 0; i < rowcol; i++) {
         let row = document.createElement("div");
         row.className = "row";
@@ -80,6 +88,16 @@ function fieldCreate() {
     // console.log("typeof(cellsArray[1].value): ", typeof(cellsArray[1].value));
     minePlace();
     console.log("cellsArray: ", cellsArray);
+    // if (recreate) {
+    //     // Add a click event listener to the div
+    //     var div = document.getElementById(id);
+    //     div.addEventListener('click', function (event) {
+    //         // Call the clickDiv function with the ID of the div and the user's click event
+    //         clickDiv(id, e);
+    //     });
+        
+    //     // simulateLeftClick(e);
+    // }
 
 };
 
@@ -189,18 +207,16 @@ function checkAdjacentDivs(id) {
 }
 
 function click(e) {
-    e.preventDefault();
-
+    console.log(e);
+    // e.preventDefault();
+    console.log("e.button",e.button);
+    console.log("e.target",e.target);
     let id = Number(e.target.id);
     const value = cellsArray[id].value;
     if (value == 5) {
         return; //Absolutely Nothing
     } else {
-        // if (counter < 3) {
-            
-        // }
-        //TODO:won limit
-        won();
+
         uncovered++;
         let ez = e.target;
         
@@ -222,6 +238,7 @@ function click(e) {
 
                 ez.classList.toggle("flag");
                 cellsArray[id].value = 3;
+                won();
             }
             else if (value == 4) { //type 4 flagged_not_mine  -->> type 1 not_mine
                 
@@ -232,10 +249,12 @@ function click(e) {
 
                 ez.classList.toggle("flag");
                 cellsArray[id].value = 4;
+                won();
             }
 
         }
         else { //left click
+            console.log("uncovered",uncovered);
 
             if (value == 3) {
                 return; //nothing
@@ -243,8 +262,12 @@ function click(e) {
                 return; //nothing
             } else if (value == 1) {
                 checkCell(id); 
-            } else if ((value == 2)&&(uncovered == 0)) {
-                fieldCreate(); //TODO: better way for not leting user instantlose
+            } else if ((value == 2)&&(uncovered == 1)) {
+                console.log("uncovered first click redo",uncovered);
+                console.log("újragenerálva");
+                elementId = ez.id;
+                clickElement(elementId,e);
+                //TODO: better way for not leting user instantlose
             } else if (value == 2) {
                 bumm(ez);
             }
@@ -257,7 +280,8 @@ function bumm(ez) {
     document.getElementById("field").style.marginTop = "1%";
     document.getElementById("setup").style.display = "block";
     document.querySelector("#setup h2").innerHTML = "You died";
-    
+    console.log("minesarray:",minesArray);
+    console.log("ez:",ez);
     minesArray.forEach(id => {
         if (cellsArray[id].value == 3) {
             document.getElementById(id).classList.remove("flag");
@@ -273,7 +297,14 @@ function bumm(ez) {
 }
 
 function won() { 
-    if ((!cellsArray.includes(2))&&(!cellsArray.includes(1))&&(!cellsArray.includes(4))) {
+    let open = 0;
+    cellsArray.forEach(el => {
+        
+        if (el.value == 5){
+            open++;
+        }
+    });
+    if ((!cellsArray.includes(2))&&(!cellsArray.includes(1))&&(!cellsArray.includes(4))&&(open == ((rowcol * rowcol)-mines))) {
         document.querySelector("#setup h2").innerHTML = "You Won</br>Congratulation!!!";
         document.getElementById("setup").style.display = "block";
         document.getElementById("field").style.marginTop=0;
@@ -334,6 +365,7 @@ function checkCell(id) { //id represents a not flagged cell called from the outs
     // Mark the cell as checked
     checkedCells[id] = true;
     counter--;
+    won();
     let mc = mineCount(id);
 
     if (mc == 0) {
@@ -353,3 +385,116 @@ function checkCell(id) { //id represents a not flagged cell called from the outs
         cellsArray[id].value = 5;
     }
 }
+
+// function clickElement(event) {
+//     console.log("click event:", event);
+//     // Call the other function here
+//     console.log("before fieldcreate click event.target:", event.target);
+
+//     fieldCreate();
+//     console.log("fieldcreate click event:", event);
+
+//     let element = event.target.id;
+//     console.log("element type",typeof(element));
+//     console.log("click event:", event, "element", element, "event.target:", event.target);
+//     //let id = element.target.id; 
+//     var newField = document.getElementById(element);
+//     console.log("newField type",typeof(newField));
+//     console.log("newField",newField);
+//     // Create a new event object for the click event, using the event target from the user's click
+//     if (newField) {
+//         var clickEvent = new MouseEvent('click', {
+//           'view': window,
+//           'bubbles': true,
+//           'cancelable': true,
+//           'clientX': event.clientX,
+//           'clientY': event.clientY,
+//           'button': event.button
+//         });
+//     }
+
+//     // Trigger the click event on the element, with the event target from the user's click
+//     newField.dispatchEvent(clickEvent);
+//     console.log("click event:", event, "element", element, "event.target:", event.target);
+
+// }
+function clickElement(element,event) {
+    console.log("click event:", event);
+    // Call the other function here
+    console.log("before fieldcreate click event.target:", event.target);
+
+    fieldCreate();
+    console.log("fieldcreate click event:", event);
+
+    //let element = event.target.id;
+    console.log("element type",typeof(element));
+    console.log("click event:", event, "element", element, "event.target:", event.target);
+    //let id = element.target.id; 
+    
+    // Retrieve a reference to the new field after it has been created
+    var newField = document.getElementById(element);
+    console.log("newField type",typeof(newField));
+    console.log("newField",newField);
+    
+    // Create a new event object for the click event, using the event target from the user's click
+    if (newField) {
+        var clickEvent = new MouseEvent('click', {
+          'view': window,
+          'bubbles': true,
+          'cancelable': true,
+          'clientX': event.clientX,
+          'clientY': event.clientY,
+          'button': event.button
+          
+        });
+        
+        // Trigger the click event on the element, with the event target from the user's click
+        newField.dispatchEvent(clickEvent);
+        console.log("click event:", event, "element", element, "event.target:", event.target);
+    }
+}
+
+
+  
+// function simulateLeftClick(e){
+//     // Prevent the default context menu from appearing
+//     if (e.cancelable) {
+//         e.preventDefault();
+//       }
+//     // Create a new mouse event with the right-click button pressed
+//     var leftClickEvent = new MouseEvent("contextmenu", {
+//         bubbles: true,
+//         cancelable: true,
+//         view: window,
+//         button: 0,
+//         // Set the coordinates of the mouse event to the touch location
+//         clientX: e.touches[0].clientX,
+//         clientY: e.touches[0].clientY
+//     });
+//     // Dispatch the mouse event on the target element
+//     e.target.dispatchEvent(leftClickEvent);
+//     click(leftClickEvent);
+// }
+
+
+// function clickDiv(id, event) {
+//     // Call the other function here
+//     fieldCreate(true);
+  
+//     // Get the div element by its ID
+//     var div = document.getElementById(id);
+  
+//     // Create a new event object for the click event, using the event target from the user's click
+//     var clickEvent = new MouseEvent('click', {
+//       'view': window,
+//       'bubbles': true,
+//       'cancelable': true,
+//       'clientX': event.clientX,
+//       'clientY': event.clientY,
+//       'button': event.button
+//     });
+  
+//     // Trigger the click event on the div, with the event target from the user's click
+//     div.dispatchEvent(clickEvent);
+//   }
+  
